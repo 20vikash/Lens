@@ -53,3 +53,10 @@ jspm_packages/
 
 # Aider AI Chat
 .aider*
+
+# Ruff cache
+.ruff_cache/
+
+# Generated frontend type files
+frontend/auto-imports.d.ts
+frontend/components.d.ts

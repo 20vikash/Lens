@@ -1,5 +1,5 @@
 [project]
-name = "log_viewer"
+name = "lens"
 authors = [
     { name = "Frappe", email = "vikash@frappe.io"}
 ]

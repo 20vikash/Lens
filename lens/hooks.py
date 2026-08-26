@@ -1,5 +1,5 @@
-app_name = "log_viewer"
-app_title = "Log Viewer"
+app_name = "lens"
+app_title = "Lens"
 app_publisher = "Frappe"
 app_description = "log"
 app_email = "vikash@frappe.io"
