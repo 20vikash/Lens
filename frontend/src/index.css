@@ -1,0 +1,26 @@
+@import 'frappe-ui/style.css';
+
+@layer base {
+	body {
+		@apply text-base antialiased text-ink-gray-9 bg-surface-menu-bar;
+		font-feature-settings: 'cv11', 'ss01';
+	}
+}
+
+@layer components {
+	.tnum {
+		font-feature-settings: 'tnum';
+	}
+	.font-mono {
+		font-feature-settings: 'tnum', 'zero';
+	}
+}
+
+@layer utilities {
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+}

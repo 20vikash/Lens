@@ -1,0 +1,31 @@
+{
+	"name": "log-viewer-frontend",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"engines": {
+		"node": ">=18"
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"copy-html-entry": "cp ../lens/public/frontend/index.html ../lens/www/logs.html"
+	},
+	"dependencies": {
+		"@vueuse/core": "^10.7.2",
+		"dayjs": "^1.11.10",
+		"echarts": "^5.5.0",
+		"frappe-ui": "0.1.261",
+		"lucide-vue-next": "^0.484.0",
+		"vue": "^3.5.13",
+		"vue-router": "^4.2.2"
+	},
+	"devDependencies": {
+		"@tailwindcss/container-queries": "^0.1.1",
+		"@vitejs/plugin-vue": "^4.2.3",
+		"autoprefixer": "^10.4.19",
+		"postcss": "^8.4.38",
+		"tailwindcss": "3.4.17",
+		"vite": "^4.4.6"
+	}
+}
