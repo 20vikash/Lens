@@ -31,12 +31,12 @@
 
 				<template v-for="(cond, i) in draft" :key="i">
 					<!-- Conjunction label between rows -->
-					<div v-if="i > 0" class="flex items-center gap-2 py-1">
+					<div v-if="i > 0" class="flex items-center gap-3 py-1.5">
 						<div class="h-px flex-1 bg-outline-gray-1"></div>
 						<select
 							v-model="cond.conjunction"
-							class="h-6 rounded border border-outline-gray-2 bg-surface-white px-2 text-[10px] font-bold uppercase tracking-wide"
-							:class="cond.conjunction === 'or' ? 'text-orange-600 border-orange-200' : 'text-ink-gray-4'"
+							class="h-7 rounded-md border border-outline-gray-2 bg-surface-white px-3 text-[11px] font-bold uppercase tracking-wide"
+							:class="cond.conjunction === 'or' ? 'text-orange-600 border-orange-200 bg-orange-50' : 'text-ink-gray-4'"
 						>
 							<option value="and">AND</option>
 							<option value="or">OR</option>

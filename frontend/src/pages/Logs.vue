@@ -59,13 +59,13 @@
 
 			<div
 				v-if="activeChips.length || conditions.length"
-				class="mt-2 flex flex-wrap items-center gap-1.5 border-t border-outline-gray-1 pt-2"
+				class="mt-2 flex flex-wrap items-center gap-2 border-t border-outline-gray-1 pt-2.5"
 			>
 				<span class="text-[10px] font-medium uppercase tracking-wider text-ink-gray-3">Filters</span>
 				<button
 					v-for="chip in activeChips"
 					:key="chip.key"
-					class="group inline-flex items-center gap-1 rounded-full border border-outline-gray-2 bg-surface-gray-1 py-0.5 pl-2.5 pr-1.5 text-xs text-ink-gray-7 transition-colors hover:border-outline-gray-3 hover:bg-surface-gray-2"
+					class="group inline-flex items-center gap-1 rounded-full border border-outline-gray-2 bg-surface-gray-1 px-2.5 py-1 text-xs text-ink-gray-7 transition-colors hover:border-outline-gray-3 hover:bg-surface-gray-2"
 					@click="removeChip(chip)"
 				>
 					<span class="font-medium text-ink-gray-5">{{ chip.field }}:</span>{{ chip.value }}
@@ -74,15 +74,15 @@
 				<template v-for="(cond, i) in conditions" :key="`cond-${i}`">
 					<span
 						v-if="i > 0"
-						class="inline-flex items-center rounded px-2 py-0.5 text-[10px] font-bold uppercase leading-none"
+						class="inline-flex items-center justify-center rounded-md px-2.5 py-1 text-[11px] font-bold uppercase leading-none tracking-wide"
 						:class="cond.conjunction === 'or'
-							? 'bg-orange-100 text-orange-600'
-							: 'bg-surface-gray-2 text-ink-gray-4'"
+							? 'bg-orange-100 text-orange-600 ring-1 ring-orange-200'
+							: 'bg-surface-gray-2 text-ink-gray-4 ring-1 ring-outline-gray-2'"
 					>
 						{{ cond.conjunction === 'or' ? 'OR' : 'AND' }}
 					</span>
 					<button
-						class="group inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 py-0.5 pl-2.5 pr-1.5 text-xs text-blue-700 transition-colors hover:bg-blue-100"
+						class="group inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs text-blue-700 transition-colors hover:bg-blue-100"
 						@click="removeCondition(i)"
 					>
 						<span class="font-mono font-medium text-blue-500">{{ cond.field }}</span>
@@ -91,7 +91,7 @@
 						<XIcon class="h-3 w-3 text-blue-400 transition-colors group-hover:text-blue-600" />
 					</button>
 				</template>
-				<button class="ml-1 text-xs text-ink-gray-4 underline-offset-2 hover:text-ink-gray-6 hover:underline" @click="clearAll">
+				<button class="ml-1.5 text-xs text-ink-gray-4 underline-offset-2 hover:text-ink-gray-6 hover:underline" @click="clearAll">
 					Clear all
 				</button>
 			</div>
