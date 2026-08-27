@@ -74,8 +74,10 @@
 				<template v-for="(cond, i) in conditions" :key="`cond-${i}`">
 					<span
 						v-if="i > 0"
-						class="text-[10px] font-bold uppercase"
-						:class="cond.conjunction === 'or' ? 'text-orange-500' : 'text-ink-gray-3'"
+						class="inline-flex items-center rounded px-2 py-0.5 text-[10px] font-bold uppercase leading-none"
+						:class="cond.conjunction === 'or'
+							? 'bg-orange-100 text-orange-600'
+							: 'bg-surface-gray-2 text-ink-gray-4'"
 					>
 						{{ cond.conjunction === 'or' ? 'OR' : 'AND' }}
 					</span>
