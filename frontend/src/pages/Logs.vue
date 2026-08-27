@@ -38,6 +38,46 @@
 						@apply="applyConditions"
 					/>
 					<Dropdown :options="rangeOptions" :button="{ label: rangeLabel, iconLeft: 'clock', iconRight: 'chevron-down' }" placement="right" />
+					<Popover v-model:show="customRangeOpen" placement="bottom">
+						<template #target="{ togglePopover }">
+							<Tooltip text="Custom date & time range">
+								<Button @click="togglePopover">
+									<template #icon>
+										<LucideCalendar class="h-4 w-4" />
+									</template>
+								</Button>
+							</Tooltip>
+						</template>
+						<template #body>
+							<div class="w-[28rem] rounded-lg border border-outline-gray-2 bg-surface-white p-4 shadow-xl">
+								<div class="mb-3 text-[10px] font-semibold uppercase tracking-wider text-ink-gray-4">Custom range</div>
+								<div class="space-y-3">
+									<div>
+										<label class="mb-1 block text-xs font-medium text-ink-gray-5">Start</label>
+										<DateTimePicker
+											v-model="customStart"
+											placeholder="Select start date & time"
+											:allow-custom-time="true"
+											class="w-full"
+										/>
+									</div>
+									<div>
+										<label class="mb-1 block text-xs font-medium text-ink-gray-5">End</label>
+										<DateTimePicker
+											v-model="customEnd"
+											placeholder="Select end date & time"
+											:allow-custom-time="true"
+											class="w-full"
+										/>
+									</div>
+								</div>
+								<div class="mt-4 flex justify-end gap-2">
+									<Button variant="ghost" size="sm" label="Cancel" @click="customRangeOpen = false" />
+									<Button variant="solid" size="sm" label="Apply" @click="applyCustomRange" />
+								</div>
+							</div>
+						</template>
+					</Popover>
 					<Tooltip text="Toggle sort order">
 						<Button @click="toggleOrder">
 							<template #icon>
@@ -156,11 +196,12 @@
 
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
-import { createResource, Badge, Button, Dropdown, Select, TextInput, Tooltip, LoadingIndicator } from 'frappe-ui'
+import { createResource, Badge, Button, DateTimePicker, Dropdown, Popover, Select, TextInput, Tooltip, LoadingIndicator } from 'frappe-ui'
 import LucideSearch from '~icons/lucide/search'
 import LucideX from '~icons/lucide/x'
 import LucideArrowDownWideNarrow from '~icons/lucide/arrow-down-wide-narrow'
 import LucideArrowUpNarrowWide from '~icons/lucide/arrow-up-narrow-wide'
+import LucideCalendar from '~icons/lucide/calendar'
 import LucideTerminal from '~icons/lucide/terminal'
 import LucideRadioTower from '~icons/lucide/radio-tower'
 import Histogram from '../components/Histogram.vue'
@@ -188,6 +229,38 @@ const rows = ref([])
 const now = Date.now()
 const range = ref({ start: now - 24 * 3600 * 1000, end: now })
 const presetMinutes = ref(1440)
+const customRangeOpen = ref(false)
+const customStart = ref('')
+const customEnd = ref('')
+
+function msToDatetime(ms) {
+	const d = new Date(ms)
+	const pad = (n) => String(n).padStart(2, '0')
+	return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+}
+
+function datetimeToMs(str) {
+	if (!str) return null
+	const d = new Date(str)
+	return isNaN(d.getTime()) ? null : d.getTime()
+}
+
+function openCustomRange() {
+	customStart.value = msToDatetime(range.value.start)
+	customEnd.value = msToDatetime(range.value.end)
+	customRangeOpen.value = true
+}
+
+function applyCustomRange() {
+	const start = datetimeToMs(customStart.value)
+	const end = datetimeToMs(customEnd.value)
+	if (start && end && start < end) {
+		presetMinutes.value = null
+		range.value = { start, end }
+		customRangeOpen.value = false
+		runSearch(true)
+	}
+}
 
 const rangeOptions = TIME_RANGES.map((r) => ({
 	label: r.label,
