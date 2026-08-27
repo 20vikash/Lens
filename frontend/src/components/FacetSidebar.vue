@@ -31,7 +31,7 @@
 							class="min-w-0 truncate"
 							:class="isSelected(field, item.value) ? 'font-medium text-ink-gray-9' : 'text-ink-gray-7'"
 						>
-							{{ item.value || '(empty)' }}
+							{{ field.name === 'level' ? formatLevel(item.value) : (item.value || '(empty)') }}
 						</span>
 					</span>
 					<span class="shrink-0 text-[11px] tnum text-ink-gray-3">{{ humanCount(item.count) }}</span>
@@ -94,7 +94,7 @@ import { reactive, watch } from 'vue'
 import LucideCheck from '~icons/lucide/check'
 import LucideChevronDown from '~icons/lucide/chevron-down'
 import LucideTag from '~icons/lucide/tag'
-import { humanCount, LEVEL_ORDER } from '../utils/logs'
+import { humanCount, formatLevel, LEVEL_ORDER } from '../utils/logs'
 
 const props = defineProps({
 	facets: { type: Object, default: () => ({}) },

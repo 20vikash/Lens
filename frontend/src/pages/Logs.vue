@@ -69,7 +69,7 @@
 						class="group inline-flex shrink-0 items-center gap-1.5 rounded-full border border-outline-gray-2 bg-surface-gray-1 px-3 py-1 text-xs text-ink-gray-7 transition-colors hover:border-outline-gray-3 hover:bg-surface-gray-2"
 						@click="removeChip(chip)"
 					>
-						<span class="font-medium text-ink-gray-5">{{ chip.field }}:</span>{{ chip.value }}
+						<span class="font-medium text-ink-gray-5">{{ chip.field }}:</span>{{ chip.field === 'level' ? formatLevel(chip.value) : chip.value }}
 						<LucideX class="h-3 w-3 text-ink-gray-3 transition-colors group-hover:text-ink-gray-6" />
 					</button>
 					<template v-for="(cond, i) in conditions" :key="`cond-${i}`">
@@ -136,7 +136,7 @@
 								class="flex items-center gap-1.5 text-[10px] font-medium tracking-wide text-ink-gray-5"
 							>
 								<span class="h-2 w-2 rounded-sm" :style="{ backgroundColor: LEVEL_COLORS[level] }" />
-								{{ level }}
+								{{ formatLevel(level) }}
 							</button>
 						</div>
 						<span v-if="lastRunAt" class="text-[11px] text-ink-gray-3 tnum">updated {{ formatTs(lastRunAt).split(', ')[1] }}</span>
@@ -167,7 +167,7 @@ import Histogram from '../components/Histogram.vue'
 import FacetSidebar from '../components/FacetSidebar.vue'
 import LogTable from '../components/LogTable.vue'
 import FilterBuilder from '../components/FilterBuilder.vue'
-import { TIME_RANGES, LEVEL_COLORS, LEVEL_ORDER, humanCount, formatTs } from '../utils/logs'
+import { TIME_RANGES, LEVEL_COLORS, LEVEL_ORDER, formatLevel, humanCount, formatTs } from '../utils/logs'
 import { parseQuery } from '../utils/query'
 
 const LIMIT = 100

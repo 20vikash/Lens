@@ -27,6 +27,11 @@ export function formatBucket(ms) {
 	return dayjs(ms).format('MMM D HH:mm')
 }
 
+export function formatLevel(level) {
+	const s = String(level || '')
+	return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
+}
+
 export function humanCount(n) {
 	if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M'
 	if (n >= 1000) return (n / 1000).toFixed(1) + 'K'

@@ -43,11 +43,10 @@
 				<span class="w-40 shrink-0 tnum text-ink-gray-5">{{ formatTs(row.ts) }}</span>
 				<span class="w-[4.25rem] shrink-0">
 					<span
-						class="inline-flex items-center gap-1 rounded px-1.5 py-px text-[10px] font-semibold uppercase tracking-wide"
+						class="inline-flex items-center rounded px-1.5 py-px text-[10px] font-semibold capitalize tracking-wide"
 						:style="levelStyle(row.level)"
 					>
-						<span class="h-1.5 w-1.5 rounded-full" :style="{ backgroundColor: levelColor(row.level) }" />
-						{{ row.level }}
+						{{ formatLevel(row.level) }}
 					</span>
 				</span>
 				<span class="hidden w-28 shrink-0 truncate text-ink-gray-5 lg:inline">{{ row.service }}</span>
@@ -90,7 +89,7 @@ import LucideChevronRight from '~icons/lucide/chevron-right'
 import LucideCopy from '~icons/lucide/copy'
 import LucideSearchX from '~icons/lucide/search-x'
 import { Button } from 'frappe-ui'
-import { formatTs, LEVEL_COLORS } from '../utils/logs'
+import { formatTs, formatLevel, LEVEL_COLORS } from '../utils/logs'
 
 defineProps({
 	rows: { type: Array, default: () => [] },

@@ -14,7 +14,7 @@ import * as echarts from 'echarts/core'
 import { BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
-import { LEVEL_COLORS, LEVEL_ORDER, formatBucket, humanCount } from '../utils/logs'
+import { LEVEL_COLORS, LEVEL_ORDER, formatBucket, formatLevel, humanCount } from '../utils/logs'
 
 echarts.use([BarChart, GridComponent, TooltipComponent, CanvasRenderer])
 
@@ -92,7 +92,7 @@ function render() {
 				},
 			},
 			series: levels.map((level) => ({
-				name: level,
+				name: formatLevel(level),
 				type: 'bar',
 				stack: 'logs',
 				itemStyle: { color: LEVEL_COLORS[level] },
