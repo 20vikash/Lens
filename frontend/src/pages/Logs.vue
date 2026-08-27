@@ -1,7 +1,7 @@
 <template>
 	<div class="flex h-screen flex-col overflow-hidden bg-surface-menu-bar">
 		<!-- Toolbar -->
-		<header class="shrink-0 border-b border-outline-gray-2 bg-surface-white px-4 py-2.5">
+		<header class="relative z-20 shrink-0 border-b border-outline-gray-2 bg-surface-white px-4 py-2.5">
 			<div class="flex items-center gap-3">
 				<div class="flex items-center gap-2.5 pr-1">
 					<div class="flex h-7 w-7 items-center justify-center rounded-md bg-surface-gray-7 shadow-sm">
@@ -59,7 +59,7 @@
 
 			<div
 				v-if="activeChips.length || conditions.length"
-				class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-outline-gray-1 pt-2.5"
+				class="mt-2.5 flex max-h-24 flex-wrap items-center gap-x-3 gap-y-2 overflow-y-auto border-t border-outline-gray-1 pt-2.5"
 			>
 				<span class="text-[10px] font-medium uppercase tracking-wider text-ink-gray-3">Filters</span>
 				<button
