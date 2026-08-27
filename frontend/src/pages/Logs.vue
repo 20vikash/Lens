@@ -71,17 +71,24 @@
 					<span class="font-medium text-ink-gray-5">{{ chip.field }}:</span>{{ chip.value }}
 					<XIcon class="h-3 w-3 text-ink-gray-3 transition-colors group-hover:text-ink-gray-6" />
 				</button>
-				<button
-					v-for="(cond, i) in conditions"
-					:key="`cond-${i}`"
-					class="group inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 py-0.5 pl-2.5 pr-1.5 text-xs text-blue-700 transition-colors hover:bg-blue-100"
-					@click="removeCondition(i)"
-				>
-					<span class="font-mono font-medium text-blue-500">{{ cond.field }}</span>
-					<span class="font-semibold tnum">{{ OP_SYMBOL[cond.op] }}</span>
-					<span class="tnum">{{ cond.value }}</span>
-					<XIcon class="h-3 w-3 text-blue-400 transition-colors group-hover:text-blue-600" />
-				</button>
+				<template v-for="(cond, i) in conditions" :key="`cond-${i}`">
+					<span
+						v-if="i > 0"
+						class="text-[10px] font-bold uppercase"
+						:class="cond.conjunction === 'or' ? 'text-orange-500' : 'text-ink-gray-3'"
+					>
+						{{ cond.conjunction === 'or' ? 'OR' : 'AND' }}
+					</span>
+					<button
+						class="group inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 py-0.5 pl-2.5 pr-1.5 text-xs text-blue-700 transition-colors hover:bg-blue-100"
+						@click="removeCondition(i)"
+					>
+						<span class="font-mono font-medium text-blue-500">{{ cond.field }}</span>
+						<span class="font-semibold tnum">{{ OP_SYMBOL[cond.op] }}</span>
+						<span class="tnum">{{ cond.value }}</span>
+						<XIcon class="h-3 w-3 text-blue-400 transition-colors group-hover:text-blue-600" />
+					</button>
+				</template>
 				<button class="ml-1 text-xs text-ink-gray-4 underline-offset-2 hover:text-ink-gray-6 hover:underline" @click="clearAll">
 					Clear all
 				</button>
