@@ -1,11 +1,11 @@
 import dayjs from 'dayjs'
 
 export const LEVEL_COLORS = {
-	DEBUG: '#94a3b8',
-	INFO: '#3b82f6',
-	WARNING: '#f59e0b',
-	ERROR: '#ef4444',
-	CRITICAL: '#a21caf',
+	DEBUG: '#999999',
+	INFO: '#0289F7',
+	WARNING: '#E79913',
+	ERROR: '#E03636',
+	CRITICAL: '#6846E3',
 }
 
 export const LEVEL_ORDER = ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']

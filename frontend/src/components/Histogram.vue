@@ -59,7 +59,7 @@ function render() {
 				backgroundColor: '#171717',
 				borderWidth: 0,
 				padding: [8, 12],
-				textStyle: { color: '#fafafa', fontSize: 11 },
+				textStyle: { color: '#F8F8F8', fontSize: 11 },
 				formatter(params) {
 					const lines = [`<b>${formatBucket(params[0].value[0])}</b>`]
 					for (const p of [...params].reverse()) {
@@ -82,13 +82,13 @@ function render() {
 			yAxis: {
 				type: 'value',
 				splitNumber: 2,
-				splitLine: { lineStyle: { color: '#f3f3f3' } },
+				splitLine: { lineStyle: { color: '#F3F3F3' } },
 				axisLabel: {
 					width: 38,
 					overflow: 'truncate',
 					formatter: (v) => humanCount(v),
 					fontSize: 10,
-					color: '#a3a3a3',
+					color: '#999999',
 				},
 			},
 			series: levels.map((level) => ({
