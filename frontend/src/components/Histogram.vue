@@ -52,7 +52,7 @@ function render() {
 	instance.setOption(
 		{
 			animation: false,
-			grid: { left: 28, right: 16, top: 18, bottom: 6, containLabel: true },
+			grid: { left: 48, right: 20, top: 18, bottom: 6, containLabel: true },
 			tooltip: {
 				trigger: 'axis',
 				axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(0,0,0,0.04)' } },
