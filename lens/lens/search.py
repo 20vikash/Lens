@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from datetime import UTC, datetime
 from typing import Any
 
 FIELDS = ("resource_id", "product", "service", "level", "source")
@@ -99,6 +100,76 @@ def bucket_seconds(start_ms: int, end_ms: int, target_buckets: int = 60) -> int:
 	return max(int(span / target_buckets), 1)
 
 
+STATS_FIELDS = ("resource_id", "product", "service", "level")
+SECONDS_PER_DAY = 86_400
+
+
+def _stats_histogram(
+	client: Any,
+	start: int,
+	end: int,
+	levels: list[str] | None,
+	filters: dict[str, list[str]] | None,
+) -> dict:
+	"""Daily histogram from the pre-aggregated `daily_log_stats` table.
+
+	Returns ``{bucket_ms: {level: count}}`` keyed at UTC midnight. Returns an
+	empty dict if the table is unavailable so the caller can fall back.
+	"""
+	start_date = datetime.fromtimestamp(start / 1000, tz=UTC).date()
+	end_date = datetime.fromtimestamp(end / 1000, tz=UTC).date()
+	parameters: dict[str, Any] = {"start_date": start_date, "end_date": end_date}
+	clauses = ["date >= {start_date:Date}", "date <= {end_date:Date}"]
+
+	if levels:
+		valid = [lv for lv in levels if lv in LEVELS]
+		if valid:
+			parameters["levels"] = valid
+			clauses.append("level IN {levels:Array(LowCardinality(String))}")
+
+	for field in ("resource_id", "product", "service"):
+		values = [v for v in (filters or {}).get(field, []) if v]
+		if values:
+			parameters[field] = values
+			clauses.append(f"{field} IN {{{field}:Array(LowCardinality(String))}}")
+
+	try:
+		response = client.query(
+			"SELECT date, level, sum(log_count) AS count"
+			f" FROM daily_log_stats WHERE {' AND '.join(clauses)}"
+			" GROUP BY date, level ORDER BY date",
+			parameters=parameters,
+		)
+	except Exception:
+		return {}
+
+	histogram: dict[int, dict[str, int]] = {}
+	for d, lvl, count in response.result_rows:
+		key = int(datetime.combine(d, datetime.min.time(), tzinfo=UTC).timestamp() * 1000)
+		histogram.setdefault(key, {})[lvl] = count
+	return histogram
+
+
+def _can_use_stats_table(
+	span_seconds: int,
+	query: str,
+	filters: dict[str, list[str]] | None,
+	conditions: list[dict] | None,
+) -> bool:
+	"""The stats table only carries daily buckets and a subset of fields, so
+	it can only stand in for the histogram when no message/source/attribute
+	filtering is required and the range is wide enough for daily buckets."""
+	if span_seconds <= SECONDS_PER_DAY:
+		return False
+	if query and query.strip():
+		return False
+	if (filters or {}).get("source"):
+		return False
+	if conditions:
+		return False
+	return True
+
+
 def search(
 	client: Any,
 	start: int,
@@ -130,26 +201,33 @@ def search(
 		row["attributes"] = row.get("attributes") or {}
 		rows.append(row)
 
+	span = max((end - start) / 1000, 1)
 	bucket = bucket_seconds(start, end)
-	parameters["bucket"] = bucket
-	histogram_result = client.query(
-		f"SELECT toStartOfInterval(ts, INTERVAL {{bucket:Int32}} SECOND) AS bucket,"
-		f" level, count() AS count {base} GROUP BY bucket, level ORDER BY bucket",
-		parameters=parameters,
-	)
-	histogram = {}
-	for b_ts, lvl, count in histogram_result.result_rows:
-		key = int(b_ts.timestamp() * 1000)
-		histogram.setdefault(key, {})[lvl] = count
+	histogram: dict[int, dict[str, int]] = {}
+
+	if _can_use_stats_table(span, query, filters, conditions):
+		stats = _stats_histogram(client, start, end, levels, filters)
+		if stats:
+			bucket = SECONDS_PER_DAY
+			histogram = stats
+
+	if not histogram:
+		parameters["bucket"] = bucket
+		histogram_result = client.query(
+			f"SELECT toStartOfInterval(ts, INTERVAL {{bucket:Int32}} SECOND) AS bucket,"
+			f" level, count() AS count {base} GROUP BY bucket, level ORDER BY bucket",
+			parameters=parameters,
+		)
+		for b_ts, lvl, count in histogram_result.result_rows:
+			key = int(b_ts.timestamp() * 1000)
+			histogram.setdefault(key, {})[lvl] = count
 
 	facets = get_facets(client, base, parameters)
 	facets["__attributes__"] = get_attribute_facets(client, base, parameters)
 	return {
 		"total": total,
 		"rows": rows,
-		"histogram": [
-			{"bucket": key, "counts": histogram[key]} for key in sorted(histogram)
-		],
+		"histogram": [{"bucket": key, "counts": histogram[key]} for key in sorted(histogram)],
 		"facets": facets,
 		"bucket_seconds": bucket,
 	}
@@ -194,9 +272,7 @@ def get_attribute_facets(client: Any, base: str, parameters: dict) -> dict:
 				f" AND has(mapKeys(attributes), {key!r}) GROUP BY value ORDER BY count DESC LIMIT 5",
 				parameters=parameters,
 			).result_rows
-			entry["values"] = [
-				{"value": str(v) if v is not None else "", "count": c} for v, c in value_rows
-			]
+			entry["values"] = [{"value": str(v) if v is not None else "", "count": c} for v, c in value_rows]
 		except Exception:
 			pass
 		result.append(entry)
