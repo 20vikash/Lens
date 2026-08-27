@@ -14,7 +14,7 @@
 				/>
 			</summary>
 
-			<div class="pb-1">
+			<div class="pb-2 pt-0.5">
 				<button
 					v-for="item in visibleItems(field)"
 					:key="item.value"
@@ -61,7 +61,7 @@
 				</span>
 			</summary>
 
-			<div class="pb-1">
+			<div class="pb-2 pt-0.5">
 				<button
 					v-for="item in (attr.values || []).slice(0, 5)"
 					:key="item.value"
