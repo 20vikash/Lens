@@ -4,19 +4,17 @@
 			<span class="text-[10px] font-semibold uppercase tracking-wider text-ink-gray-4">Fields</span>
 		</div>
 
-		<div v-for="field in fields" :key="field.name" class="border-b border-outline-gray-1 last:border-0">
-			<button
-				class="flex w-full items-center justify-between px-3.5 py-1.5 text-left transition-colors hover:bg-surface-gray-1"
-				@click="field.open = !field.open"
+		<details v-for="field in fields" :key="field.name" class="border-b border-outline-gray-1 last:border-0" :open="field.open">
+			<summary
+				class="flex cursor-pointer list-none items-center justify-between px-3.5 py-1.5 text-left transition-colors hover:bg-surface-gray-1 [&_.chevron]:-rotate-90 open:[&_.chevron]:rotate-0"
 			>
 				<span class="text-[10px] font-semibold uppercase tracking-wider text-ink-gray-5">{{ field.label }}</span>
-				<ChevronDownIcon
-					class="h-3.5 w-3.5 text-ink-gray-3 transition-transform duration-200"
-					:class="{ '-rotate-90': !field.open }"
+				<LucideChevronDown
+					class="chevron h-3.5 w-3.5 text-ink-gray-3 transition-transform duration-200"
 				/>
-			</button>
+			</summary>
 
-			<div v-show="field.open" class="pb-1">
+			<div class="pb-1">
 				<button
 					v-for="item in visibleItems(field)"
 					:key="item.value"
@@ -25,7 +23,7 @@
 					@click="$emit('toggle', field.key || field.name, item.value)"
 				>
 					<span class="flex min-w-0 items-center gap-1.5">
-						<CheckIcon
+						<LucideCheck
 							class="h-3 w-3 shrink-0"
 							:class="isSelected(field, item.value) ? 'text-ink-gray-7' : 'text-ink-gray-3 opacity-0 group-hover:opacity-100'"
 						/>
@@ -40,7 +38,7 @@
 				</button>
 				<div v-if="!visibleItems(field).length" class="px-3.5 py-1 text-xs text-ink-gray-3">No data</div>
 			</div>
-		</div>
+		</details>
 
 		<!-- Attribute keys -->
 		<div class="sticky top-0 z-10 mt-px border-y border-outline-gray-1 bg-surface-white px-3.5 py-2.5">
@@ -49,22 +47,21 @@
 
 		<div v-if="!attributes.length" class="px-3.5 py-2 text-xs text-ink-gray-3">No attributes found</div>
 
-		<div v-for="attr in attributes" :key="attr.key" class="border-b border-outline-gray-1 last:border-0">
-			<button
-				class="flex w-full items-center justify-between px-3.5 py-1.5 text-left transition-colors hover:bg-surface-gray-1"
-				@click="attr.open = !attr.open"
+		<details v-for="attr in attributes" :key="attr.key" class="border-b border-outline-gray-1 last:border-0" :open="attr.open">
+			<summary
+				class="flex cursor-pointer list-none items-center justify-between px-3.5 py-1.5 text-left transition-colors hover:bg-surface-gray-1 [&_.chevron]:-rotate-90 open:[&_.chevron]:rotate-0"
 			>
 				<span class="flex min-w-0 items-center gap-1.5">
-					<TagIcon class="h-3 w-3 shrink-0 text-ink-gray-3" />
+					<LucideTag class="h-3 w-3 shrink-0 text-ink-gray-3" />
 					<span class="min-w-0 truncate font-mono text-xs text-ink-gray-6">{{ attr.key }}</span>
 				</span>
 				<span class="flex shrink-0 items-center gap-1.5">
 					<span class="text-[11px] tnum text-ink-gray-3">{{ humanCount(attr.count) }}</span>
-					<ChevronDownIcon class="h-3.5 w-3.5 text-ink-gray-3 transition-transform duration-200" :class="{ '-rotate-90': !attr.open }" />
+					<LucideChevronDown class="chevron h-3.5 w-3.5 text-ink-gray-3 transition-transform duration-200" />
 				</span>
-			</button>
+			</summary>
 
-			<div v-show="attr.open" class="pb-1">
+			<div class="pb-1">
 				<button
 					v-for="item in (attr.values || []).slice(0, 5)"
 					:key="item.value"
@@ -73,7 +70,7 @@
 					@click="$emit('toggleAttr', attr.key, item.value)"
 				>
 					<span class="flex min-w-0 items-center gap-1.5">
-						<CheckIcon
+						<LucideCheck
 							class="h-3 w-3 shrink-0"
 							:class="isAttrSelected(attr.key, item.value) ? 'text-ink-gray-7' : 'text-ink-gray-3 opacity-0 group-hover:opacity-100'"
 						/>
@@ -88,13 +85,15 @@
 				</button>
 				<div v-if="!(attr.values || []).length" class="px-3.5 py-1 text-xs text-ink-gray-3">No samples</div>
 			</div>
-		</div>
+		</details>
 	</aside>
 </template>
 
 <script setup>
 import { reactive, watch } from 'vue'
-import { CheckIcon, ChevronDownIcon, TagIcon } from 'lucide-vue-next'
+import LucideCheck from '~icons/lucide/check'
+import LucideChevronDown from '~icons/lucide/chevron-down'
+import LucideTag from '~icons/lucide/tag'
 import { humanCount, LEVEL_ORDER } from '../utils/logs'
 
 const props = defineProps({
@@ -113,7 +112,7 @@ const FIELDS = [
 	{ name: 'resource_id', label: 'Resource' },
 ]
 
-const fields = reactive(FIELDS.map((f) => ({ ...f, open: true })))
+const fields = FIELDS.map((f) => ({ ...f, open: true }))
 
 const attrState = reactive({})
 const attributes = reactive([])

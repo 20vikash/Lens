@@ -1,11 +1,11 @@
 <template>
 	<div class="flex h-screen flex-col overflow-hidden bg-surface-menu-bar">
 		<!-- Toolbar -->
-		<header class="relative z-30 shrink-0 border-b border-outline-gray-2 bg-surface-white px-4 py-2.5">
+		<header class="shrink-0 border-b border-outline-gray-2 bg-surface-white px-4 py-2.5">
 			<div class="flex items-center gap-3">
 				<div class="flex items-center gap-2.5 pr-1">
 					<div class="flex h-7 w-7 items-center justify-center rounded-md bg-surface-gray-7 shadow-sm">
-						<TerminalIcon class="h-4 w-4 text-ink-white" />
+						<LucideTerminal class="h-4 w-4 text-ink-white" />
 					</div>
 					<span class="text-sm font-semibold leading-none text-ink-gray-9">Lens</span>
 				</div>
@@ -26,7 +26,7 @@
 					@keydown.enter="runSearch(true)"
 				>
 					<template #prefix>
-						<SearchIcon class="h-4 w-4 text-ink-gray-3" />
+						<LucideSearch class="h-4 w-4 text-ink-gray-3" />
 					</template>
 				</TextInput>
 
@@ -41,15 +41,15 @@
 					<Tooltip text="Toggle sort order">
 						<Button @click="toggleOrder">
 							<template #icon>
-								<ArrowDownWideNarrow v-if="order === 'desc'" class="h-4 w-4" />
-								<ArrowUpNarrowWide v-else class="h-4 w-4" />
+								<LucideArrowDownWideNarrow v-if="order === 'desc'" class="h-4 w-4" />
+								<LucideArrowUpNarrowWide v-else class="h-4 w-4" />
 							</template>
 						</Button>
 					</Tooltip>
 					<Tooltip text="Auto refresh every 10s">
 						<Button :class="autoRefresh ? 'border-ink-gray-500 bg-surface-gray-2' : ''" @click="autoRefresh = !autoRefresh">
 							<template #icon>
-								<RadioTowerIcon class="h-4 w-4" :class="autoRefresh ? 'text-green-600' : 'text-ink-gray-4'" />
+								<LucideRadioTower class="h-4 w-4" :class="autoRefresh ? 'text-green-600' : 'text-ink-gray-4'" />
 							</template>
 						</Button>
 					</Tooltip>
@@ -70,24 +70,26 @@
 						@click="removeChip(chip)"
 					>
 						<span class="font-medium text-ink-gray-5">{{ chip.field }}:</span>{{ chip.value }}
-						<XIcon class="h-3 w-3 text-ink-gray-3 transition-colors group-hover:text-ink-gray-6" />
+						<LucideX class="h-3 w-3 text-ink-gray-3 transition-colors group-hover:text-ink-gray-6" />
 					</button>
 					<template v-for="(cond, i) in conditions" :key="`cond-${i}`">
-						<span
+						<Badge
 							v-if="i > 0"
-							class="shrink-0 text-[10px] font-semibold uppercase tracking-wide"
-							:class="cond.conjunction === 'or' ? 'text-amber-600' : 'text-ink-gray-3'"
+							:theme="cond.conjunction === 'or' ? 'amber' : 'gray'"
+							variant="subtle"
+							size="sm"
+							class="shrink-0 capitalize"
 						>
-							{{ cond.conjunction === 'or' ? 'or' : 'and' }}
-						</span>
+							{{ cond.conjunction }}
+						</Badge>
 						<button
-							class="group inline-flex shrink-0 items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs text-blue-700 transition-colors hover:bg-blue-100"
+							class="group inline-flex shrink-0 items-center gap-1.5 rounded-full border border-outline-gray-2 bg-surface-gray-1 px-3 py-1 text-xs text-ink-gray-7 transition-colors hover:border-outline-gray-3 hover:bg-surface-gray-2"
 							@click="removeCondition(i)"
 						>
-							<span class="font-mono font-medium text-blue-500">{{ cond.field }}</span>
-							<span class="font-semibold tnum text-blue-400">{{ OP_SYMBOL[cond.op] }}</span>
+							<span class="font-mono font-medium text-ink-gray-5">{{ cond.field }}</span>
+							<span class="font-semibold tnum text-ink-gray-4">{{ OP_SYMBOL[cond.op] }}</span>
 							<span class="tnum">{{ cond.value }}</span>
-							<XIcon class="h-3 w-3 text-blue-300 transition-colors group-hover:text-blue-600" />
+							<LucideX class="h-3 w-3 text-ink-gray-3 transition-colors group-hover:text-ink-gray-6" />
 						</button>
 					</template>
 				</div>
@@ -154,8 +156,13 @@
 
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
-import { createResource, Button, Dropdown, Select, TextInput, Tooltip, LoadingIndicator } from 'frappe-ui'
-import { SearchIcon, XIcon, ArrowDownWideNarrow, ArrowUpNarrowWide, TerminalIcon, RadioTowerIcon } from 'lucide-vue-next'
+import { createResource, Badge, Button, Dropdown, Select, TextInput, Tooltip, LoadingIndicator } from 'frappe-ui'
+import LucideSearch from '~icons/lucide/search'
+import LucideX from '~icons/lucide/x'
+import LucideArrowDownWideNarrow from '~icons/lucide/arrow-down-wide-narrow'
+import LucideArrowUpNarrowWide from '~icons/lucide/arrow-up-narrow-wide'
+import LucideTerminal from '~icons/lucide/terminal'
+import LucideRadioTower from '~icons/lucide/radio-tower'
 import Histogram from '../components/Histogram.vue'
 import FacetSidebar from '../components/FacetSidebar.vue'
 import LogTable from '../components/LogTable.vue'

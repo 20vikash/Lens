@@ -21,7 +21,7 @@
 		</div>
 
 		<div v-else-if="!rows.length" class="flex flex-col items-center gap-1.5 py-20 font-sans text-ink-gray-3">
-			<SearchXIcon class="h-8 w-8 text-ink-gray-2" />
+			<LucideSearchX class="h-8 w-8 text-ink-gray-2" />
 			<span class="text-sm font-medium">No logs found for the current filters</span>
 			<span class="text-xs">Try widening the time range or clearing filters</span>
 		</div>
@@ -36,7 +36,7 @@
 				class="flex w-full items-center gap-2 px-4 py-1 text-left"
 				@click="toggle(i)"
 			>
-				<ChevronRightIcon
+				<LucideChevronRight
 					class="h-3.5 w-3.5 shrink-0 text-ink-gray-3 transition-transform duration-150 group-hover:text-ink-gray-5"
 					:class="{ 'rotate-90': open.has(i) }"
 				/>
@@ -69,8 +69,8 @@
 						<div v-for="(value, key) in allFields(row)" :key="key" class="flex items-baseline gap-2.5 min-w-0">
 							<span class="w-24 shrink-0 truncate text-right font-sans text-[10px] uppercase tracking-wide text-ink-gray-3">{{ key }}</span>
 							<span class="min-w-0 flex-1 break-all text-ink-gray-8">{{ value }}</span>
-							<CheckIcon v-if="copied.has(`${i}-${key}`)" class="h-3 w-3 shrink-0 text-green-600" />
-							<CopyIcon
+							<LucideCheck v-if="copied.has(`${i}-${key}`)" class="h-3 w-3 shrink-0 text-green-600" />
+							<LucideCopy
 								v-else
 								class="h-3 w-3 shrink-0 cursor-pointer text-ink-gray-2 transition-colors hover:text-ink-gray-6"
 								@click.stop="copy(value, `${i}-${key}`)"
@@ -85,7 +85,10 @@
 
 <script setup>
 import { reactive } from 'vue'
-import { CheckIcon, ChevronRightIcon, CopyIcon, SearchXIcon } from 'lucide-vue-next'
+import LucideCheck from '~icons/lucide/check'
+import LucideChevronRight from '~icons/lucide/chevron-right'
+import LucideCopy from '~icons/lucide/copy'
+import LucideSearchX from '~icons/lucide/search-x'
 import { Button } from 'frappe-ui'
 import { formatTs, LEVEL_COLORS } from '../utils/logs'
 

@@ -7,7 +7,7 @@
 				@click="togglePopover"
 			>
 				<template #prefix>
-					<ListFilterIcon class="h-4 w-4" :class="conditions.length ? 'text-blue-600' : ''" />
+					<LucideListFilter class="h-4 w-4" :class="conditions.length ? 'text-blue-600' : ''" />
 				</template>
 				<template #suffix v-if="conditions.length">
 					<span
@@ -62,7 +62,7 @@
 							<!-- Field selector: columns, or attribute key with badge -->
 							<template v-if="cond.field === '__attr__'">
 								<div class="flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-violet-200 bg-violet-50 px-2 py-1.5">
-									<TagIcon class="h-3.5 w-3.5 shrink-0 text-violet-500" />
+									<LucideTag class="h-3.5 w-3.5 shrink-0 text-violet-500" />
 									<span class="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-violet-600">attr</span>
 									<div class="min-w-0 flex-1">
 										<Select
@@ -76,7 +76,7 @@
 										@click="cond.field = 'product'"
 										title="Back to fields"
 									>
-										<RotateCcwIcon class="h-3 w-3" />
+										<LucideRotateCcw class="h-3 w-3" />
 									</button>
 								</div>
 							</template>
@@ -106,7 +106,7 @@
 								@click="draft.splice(i, 1)"
 								title="Remove"
 							>
-								<Trash2Icon class="h-4 w-4" />
+								<LucideTrash2 class="h-4 w-4" />
 							</button>
 						</div>
 					</template>
@@ -115,10 +115,10 @@
 				<div class="mt-3 flex items-center justify-between border-t border-outline-gray-1 pt-3">
 					<div class="flex gap-1.5">
 						<Button variant="ghost" size="sm" label="Add field" @click="addRow('field')">
-							<template #icon><PlusIcon class="h-3.5 w-3.5" /></template>
+							<template #icon><LucidePlus class="h-3.5 w-3.5" /></template>
 						</Button>
 						<Button v-if="attrKeys.length" variant="ghost" size="sm" label="Add attribute" @click="addRow('attr')">
-							<template #icon><TagIcon class="h-3.5 w-3.5" /></template>
+							<template #icon><LucideTag class="h-3.5 w-3.5" /></template>
 						</Button>
 					</div>
 					<div class="flex gap-1.5">
@@ -133,8 +133,12 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { Button, Popover, Select, TextInput } from 'frappe-ui'
-import { ListFilterIcon, PlusIcon, Trash2Icon, TagIcon, RotateCcwIcon } from 'lucide-vue-next'
+import { Badge, Button, Popover, Select, TextInput } from 'frappe-ui'
+import LucideListFilter from '~icons/lucide/list-filter'
+import LucidePlus from '~icons/lucide/plus'
+import LucideTrash2 from '~icons/lucide/trash-2'
+import LucideTag from '~icons/lucide/tag'
+import LucideRotateCcw from '~icons/lucide/rotate-ccw'
 
 const props = defineProps({
 	conditions: { type: Array, default: () => [] },
