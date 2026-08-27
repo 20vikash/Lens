@@ -41,10 +41,11 @@
 					:class="{ 'rotate-90': open.has(i) }"
 				/>
 				<span class="w-40 shrink-0 tnum text-ink-gray-5">{{ formatTs(row.ts) }}</span>
-				<span class="w-[4.25rem] shrink-0">
-					<Badge :theme="levelTheme(row.level)" variant="subtle" size="sm" class="capitalize">
-						{{ formatLevel(row.level) }}
-					</Badge>
+				<span class="w-[4.5rem] shrink-0">
+					<span class="inline-flex items-center gap-1.5 text-xs text-ink-gray-5">
+						<span class="h-2 w-2 shrink-0 rounded-full" :style="{ backgroundColor: levelColor(row.level) }" />
+						<span class="capitalize">{{ formatLevel(row.level) }}</span>
+					</span>
 				</span>
 				<span class="hidden w-28 shrink-0 truncate text-ink-gray-5 lg:inline">{{ row.service }}</span>
 				<span
@@ -85,19 +86,11 @@ import LucideCheck from '~icons/lucide/check'
 import LucideChevronRight from '~icons/lucide/chevron-right'
 import LucideCopy from '~icons/lucide/copy'
 import LucideSearchX from '~icons/lucide/search-x'
-import { Badge, Button } from 'frappe-ui'
-import { formatTs, formatLevel } from '../utils/logs'
+import { Button } from 'frappe-ui'
+import { formatTs, formatLevel, LEVEL_COLORS } from '../utils/logs'
 
-const LEVEL_THEMES = {
-	DEBUG: 'gray',
-	INFO: 'blue',
-	WARNING: 'amber',
-	ERROR: 'red',
-	CRITICAL: 'violet',
-}
-
-function levelTheme(level) {
-	return LEVEL_THEMES[level] || 'gray'
+function levelColor(level) {
+	return LEVEL_COLORS[level] || LEVEL_COLORS.INFO
 }
 
 defineProps({
