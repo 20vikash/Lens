@@ -50,6 +50,7 @@
 						</template>
 						<template #body>
 							<div class="w-[28rem] rounded-lg border border-outline-gray-2 bg-surface-white p-4 shadow-xl">
+								<button class="h-0 w-0 opacity-0" tabindex="0" aria-hidden="true"></button>
 								<div class="mb-3 text-[10px] font-semibold uppercase tracking-wider text-ink-gray-4">Custom range</div>
 								<div class="space-y-3">
 									<div>
