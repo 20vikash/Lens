@@ -52,7 +52,7 @@ function render() {
 	instance.setOption(
 		{
 			animation: false,
-			grid: { left: 48, right: 16, top: 18, bottom: 6, containLabel: false },
+			grid: { left: 8, right: 16, top: 18, bottom: 6, containLabel: true },
 			tooltip: {
 				trigger: 'axis',
 				axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(0,0,0,0.04)' } },
@@ -72,8 +72,8 @@ function render() {
 			},
 			xAxis: {
 				type: 'time',
-				min: props.start - (props.bucketSeconds * 1000) / 2,
-				max: props.end + (props.bucketSeconds * 1000) / 2,
+				min: props.start - props.bucketSeconds * 1000,
+				max: props.end + props.bucketSeconds * 1000,
 				axisLine: { show: false },
 				axisTick: { show: false },
 				axisLabel: { show: false },
