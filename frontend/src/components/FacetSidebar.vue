@@ -1,6 +1,6 @@
 <template>
 	<aside class="w-60 shrink-0 overflow-y-auto border-r border-outline-gray-2 bg-surface-white">
-		<div class="sticky top-0 z-10 border-b border-outline-gray-1 bg-surface-white px-3.5 py-2.5">
+		<div class="border-b border-outline-gray-1 px-3.5 py-2.5">
 			<span class="text-[10px] font-semibold uppercase tracking-wider text-ink-gray-4">Fields</span>
 		</div>
 
@@ -41,7 +41,7 @@
 		</details>
 
 		<!-- Attribute keys -->
-		<div class="sticky top-0 z-10 mt-px border-y border-outline-gray-1 bg-surface-white px-3.5 py-2.5">
+		<div class="border-y border-outline-gray-1 px-3.5 py-2.5">
 			<span class="text-[10px] font-semibold uppercase tracking-wider text-ink-gray-4">Attributes</span>
 		</div>
 
