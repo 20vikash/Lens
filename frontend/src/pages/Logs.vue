@@ -1,7 +1,7 @@
 <template>
 	<div class="flex h-screen flex-col overflow-hidden bg-surface-menu-bar">
 		<!-- Toolbar -->
-		<header class="relative z-20 shrink-0 border-b border-outline-gray-2 bg-surface-white px-4 py-2.5">
+		<header class="shrink-0 border-b border-outline-gray-2 bg-surface-white px-4 py-2.5">
 			<div class="flex items-center gap-3">
 				<div class="flex items-center gap-2.5 pr-1">
 					<div class="flex h-7 w-7 items-center justify-center rounded-md bg-surface-gray-7 shadow-sm">
@@ -59,37 +59,39 @@
 
 			<div
 				v-if="activeChips.length || conditions.length"
-				class="mt-2.5 flex max-h-24 flex-wrap items-center gap-x-3 gap-y-2 overflow-y-auto border-t border-outline-gray-1 pt-2.5"
+				class="mt-2.5 flex items-center gap-x-3 gap-y-2 border-t border-outline-gray-1 pt-2.5"
 			>
 				<span class="text-[10px] font-medium uppercase tracking-wider text-ink-gray-3">Filters</span>
-				<button
-					v-for="chip in activeChips"
-					:key="chip.key"
-					class="group inline-flex items-center gap-1.5 rounded-full border border-outline-gray-2 bg-surface-gray-1 px-3 py-1 text-xs text-ink-gray-7 transition-colors hover:border-outline-gray-3 hover:bg-surface-gray-2"
-					@click="removeChip(chip)"
-				>
-					<span class="font-medium text-ink-gray-5">{{ chip.field }}:</span>{{ chip.value }}
-					<XIcon class="h-3 w-3 text-ink-gray-3 transition-colors group-hover:text-ink-gray-6" />
-				</button>
-				<template v-for="(cond, i) in conditions" :key="`cond-${i}`">
-					<span
-						v-if="i > 0"
-						class="flex items-center text-[10px] font-semibold uppercase tracking-wide"
-						:class="cond.conjunction === 'or' ? 'text-amber-600' : 'text-ink-gray-3'"
-					>
-						{{ cond.conjunction === 'or' ? 'or' : 'and' }}
-					</span>
+				<div class="flex min-w-0 flex-1 items-center gap-x-3 gap-y-2 overflow-x-auto pb-0.5">
 					<button
-						class="group inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs text-blue-700 transition-colors hover:bg-blue-100"
-						@click="removeCondition(i)"
+						v-for="chip in activeChips"
+						:key="chip.key"
+						class="group inline-flex shrink-0 items-center gap-1.5 rounded-full border border-outline-gray-2 bg-surface-gray-1 px-3 py-1 text-xs text-ink-gray-7 transition-colors hover:border-outline-gray-3 hover:bg-surface-gray-2"
+						@click="removeChip(chip)"
 					>
-						<span class="font-mono font-medium text-blue-500">{{ cond.field }}</span>
-						<span class="font-semibold tnum text-blue-400">{{ OP_SYMBOL[cond.op] }}</span>
-						<span class="tnum">{{ cond.value }}</span>
-						<XIcon class="h-3 w-3 text-blue-300 transition-colors group-hover:text-blue-600" />
+						<span class="font-medium text-ink-gray-5">{{ chip.field }}:</span>{{ chip.value }}
+						<XIcon class="h-3 w-3 text-ink-gray-3 transition-colors group-hover:text-ink-gray-6" />
 					</button>
-				</template>
-				<button class="ml-1 text-xs text-ink-gray-4 underline-offset-2 hover:text-ink-gray-6 hover:underline" @click="clearAll">
+					<template v-for="(cond, i) in conditions" :key="`cond-${i}`">
+						<span
+							v-if="i > 0"
+							class="shrink-0 text-[10px] font-semibold uppercase tracking-wide"
+							:class="cond.conjunction === 'or' ? 'text-amber-600' : 'text-ink-gray-3'"
+						>
+							{{ cond.conjunction === 'or' ? 'or' : 'and' }}
+						</span>
+						<button
+							class="group inline-flex shrink-0 items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs text-blue-700 transition-colors hover:bg-blue-100"
+							@click="removeCondition(i)"
+						>
+							<span class="font-mono font-medium text-blue-500">{{ cond.field }}</span>
+							<span class="font-semibold tnum text-blue-400">{{ OP_SYMBOL[cond.op] }}</span>
+							<span class="tnum">{{ cond.value }}</span>
+							<XIcon class="h-3 w-3 text-blue-300 transition-colors group-hover:text-blue-600" />
+						</button>
+					</template>
+				</div>
+				<button class="shrink-0 text-xs text-ink-gray-4 underline-offset-2 hover:text-ink-gray-6 hover:underline" @click="clearAll">
 					Clear all
 				</button>
 			</div>
