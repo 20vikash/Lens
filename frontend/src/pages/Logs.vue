@@ -1,7 +1,7 @@
 <template>
 	<div class="flex h-screen flex-col overflow-hidden bg-surface-menu-bar">
 		<!-- Toolbar -->
-		<header class="shrink-0 border-b border-outline-gray-2 bg-surface-white px-4 py-2.5">
+		<header class="relative z-30 shrink-0 border-b border-outline-gray-2 bg-surface-white px-4 py-2.5">
 			<div class="flex items-center gap-3">
 				<div class="flex items-center gap-2.5 pr-1">
 					<div class="flex h-7 w-7 items-center justify-center rounded-md bg-surface-gray-7 shadow-sm">
