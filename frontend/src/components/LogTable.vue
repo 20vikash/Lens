@@ -1,7 +1,7 @@
 <template>
 	<div class="font-mono text-xs leading-tight">
 		<!-- Column header -->
-		<div class="sticky top-0 z-10 flex items-center gap-2 border-b border-outline-gray-1 bg-surface-gray-1 px-4 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-wider text-ink-gray-4">
+		<div class="sticky top-0 flex items-center gap-2 border-b border-outline-gray-1 bg-surface-gray-1 px-4 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-wider text-ink-gray-4">
 			<span class="w-4 shrink-0" />
 			<span class="w-40 shrink-0">Timestamp</span>
 			<span class="w-[5.5rem] shrink-0">Level</span>
