@@ -42,12 +42,9 @@
 				/>
 				<span class="w-40 shrink-0 tnum text-ink-gray-5">{{ formatTs(row.ts) }}</span>
 				<span class="w-[4.25rem] shrink-0">
-					<span
-						class="inline-flex items-center rounded px-1.5 py-px text-[10px] font-semibold capitalize tracking-wide"
-						:style="levelStyle(row.level)"
-					>
+					<Badge :theme="levelTheme(row.level)" variant="subtle" size="sm" class="capitalize">
 						{{ formatLevel(row.level) }}
-					</span>
+					</Badge>
 				</span>
 				<span class="hidden w-28 shrink-0 truncate text-ink-gray-5 lg:inline">{{ row.service }}</span>
 				<span
@@ -88,8 +85,20 @@ import LucideCheck from '~icons/lucide/check'
 import LucideChevronRight from '~icons/lucide/chevron-right'
 import LucideCopy from '~icons/lucide/copy'
 import LucideSearchX from '~icons/lucide/search-x'
-import { Button } from 'frappe-ui'
-import { formatTs, formatLevel, LEVEL_COLORS } from '../utils/logs'
+import { Badge, Button } from 'frappe-ui'
+import { formatTs, formatLevel } from '../utils/logs'
+
+const LEVEL_THEMES = {
+	DEBUG: 'gray',
+	INFO: 'blue',
+	WARNING: 'amber',
+	ERROR: 'red',
+	CRITICAL: 'violet',
+}
+
+function levelTheme(level) {
+	return LEVEL_THEMES[level] || 'gray'
+}
 
 defineProps({
 	rows: { type: Array, default: () => [] },
@@ -101,15 +110,6 @@ const open = reactive(new Set())
 
 function toggle(index) {
 	open.has(index) ? open.delete(index) : open.add(index)
-}
-
-function levelColor(level) {
-	return LEVEL_COLORS[level] || LEVEL_COLORS.INFO
-}
-
-function levelStyle(level) {
-	const color = levelColor(level)
-	return { color, backgroundColor: color + '14' }
 }
 
 function allFields(row) {

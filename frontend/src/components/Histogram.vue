@@ -1,6 +1,6 @@
 <template>
 	<div class="rounded-lg border border-outline-gray-1 bg-surface-white shadow-sm">
-		<div class="flex items-center justify-between px-3 pb-1 pt-2.5 text-[10px] font-medium uppercase tracking-wider text-ink-gray-4">
+		<div class="flex items-center justify-between px-4 pb-1 pt-2.5 text-[10px] font-medium capitalize tracking-wider text-ink-gray-4">
 			<span>Distribution</span>
 			<span class="tnum normal-case tracking-normal text-ink-gray-3">{{ humanCount(total) }} events · {{ formatBucket(start) }} → {{ formatBucket(end) }}</span>
 		</div>
@@ -11,12 +11,12 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts/core'
-import { BarChart } from 'echarts/charts'
+import { BarChart as BarSeries } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
-import { LEVEL_COLORS, LEVEL_ORDER, formatBucket, formatLevel, humanCount } from '../utils/logs'
+import { LEVEL_COLORS, LEVEL_ORDER, formatLevel, formatBucket, humanCount } from '../utils/logs'
 
-echarts.use([BarChart, GridComponent, TooltipComponent, CanvasRenderer])
+echarts.use([BarSeries, GridComponent, TooltipComponent, CanvasRenderer])
 
 const props = defineProps({
 	data: { type: Array, default: () => [] },
@@ -51,9 +51,9 @@ function render() {
 	const levels = LEVEL_ORDER.filter((lv) => props.data.some((d) => d.counts[lv]))
 	instance.setOption(
 		{
-		animation: false,
-		grid: { left: 28, right: 16, top: 18, bottom: 6, containLabel: true },
-		tooltip: {
+			animation: false,
+			grid: { left: 28, right: 16, top: 18, bottom: 6, containLabel: true },
+			tooltip: {
 				trigger: 'axis',
 				axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(0,0,0,0.04)' } },
 				backgroundColor: '#171717',
@@ -70,15 +70,15 @@ function render() {
 					return lines.join('<br/>')
 				},
 			},
-		xAxis: {
-			type: 'time',
-			min: props.start - (props.bucketSeconds * 1000) / 2,
-			max: props.end + (props.bucketSeconds * 1000) / 2,
-			axisLine: { show: false },
-			axisTick: { show: false },
-			axisLabel: { show: false },
-			splitLine: { show: false },
-		},
+			xAxis: {
+				type: 'time',
+				min: props.start - (props.bucketSeconds * 1000) / 2,
+				max: props.end + (props.bucketSeconds * 1000) / 2,
+				axisLine: { show: false },
+				axisTick: { show: false },
+				axisLabel: { show: false },
+				splitLine: { show: false },
+			},
 			yAxis: {
 				type: 'value',
 				splitNumber: 2,
