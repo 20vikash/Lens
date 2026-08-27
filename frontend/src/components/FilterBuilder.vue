@@ -19,81 +19,100 @@
 			</Button>
 		</template>
 		<template #body>
-			<div class="w-[34rem] rounded-lg border border-outline-gray-2 bg-surface-white p-3 shadow-lg">
-				<div class="mb-2 flex items-center justify-between">
+			<div class="w-[36rem] rounded-lg border border-outline-gray-2 bg-surface-white p-4 shadow-xl">
+				<div class="mb-3 flex items-center justify-between">
 					<span class="text-[10px] font-semibold uppercase tracking-wider text-ink-gray-4">Advanced filters</span>
 					<span class="text-[10px] text-ink-gray-3">field · operator · value</span>
 				</div>
 
-				<div v-if="!draft.length" class="py-6 text-center text-xs text-ink-gray-3">
+				<div v-if="!draft.length" class="py-8 text-center text-xs text-ink-gray-3">
 					No filters yet. Add one to narrow results by any field or attribute.
 				</div>
 
-				<template v-for="(cond, i) in draft" :key="i">
-					<!-- Conjunction label between rows -->
-					<div v-if="i > 0" class="flex items-center gap-3 py-1.5">
-						<div class="h-px flex-1 bg-outline-gray-1"></div>
-						<select
-							v-model="cond.conjunction"
-							class="h-7 rounded-md border border-outline-gray-2 bg-surface-white px-3 text-[11px] font-bold uppercase tracking-wide"
-							:class="cond.conjunction === 'or' ? 'text-orange-600 border-orange-200 bg-orange-50' : 'text-ink-gray-4'"
-						>
-							<option value="and">AND</option>
-							<option value="or">OR</option>
-						</select>
-						<div class="h-px flex-1 bg-outline-gray-1"></div>
-					</div>
-
-					<div class="flex items-center gap-2">
-						<!-- Field selector: columns, or attribute key with badge -->
-						<template v-if="cond.field === '__attr__'">
-							<div class="flex min-w-0 flex-1 items-center gap-1 rounded border border-violet-200 bg-violet-50 px-1.5 py-1">
-								<TagIcon class="h-3 w-3 shrink-0 text-violet-500" />
-								<span class="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-violet-600">attr</span>
-								<div class="min-w-0 flex-1">
-									<Select
-										size="sm"
-										:options="attrKeyOptions()"
-										v-model="cond.attrKey"
-									/>
-								</div>
+				<div class="space-y-2">
+					<template v-for="(cond, i) in draft" :key="i">
+						<!-- Conjunction toggle between rows -->
+						<div v-if="i > 0" class="flex items-center gap-3 py-0.5">
+							<div class="h-px flex-1 bg-outline-gray-1"></div>
+							<div class="flex overflow-hidden rounded-md border border-outline-gray-2">
 								<button
-									class="shrink-0 rounded p-0.5 text-violet-400 hover:bg-violet-100 hover:text-violet-600"
-									@click="cond.field = 'product'"
-									title="Back to fields"
+									class="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide transition-colors"
+									:class="cond.conjunction !== 'or'
+										? 'bg-surface-gray-4 text-ink-white'
+										: 'bg-surface-white text-ink-gray-4 hover:bg-surface-gray-1'"
+									@click="cond.conjunction = 'and'"
 								>
-									<RotateCcwIcon class="h-3 w-3" />
+									AND
+								</button>
+								<button
+									class="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide transition-colors"
+									:class="cond.conjunction === 'or'
+										? 'bg-amber-500 text-ink-white'
+										: 'bg-surface-white text-ink-gray-4 hover:bg-surface-gray-1'"
+									@click="cond.conjunction = 'or'"
+								>
+									OR
 								</button>
 							</div>
-						</template>
-						<template v-else>
-							<div class="min-w-0 flex-1">
-								<Select
-									:options="fieldOptions"
-									v-model="cond.field"
-									@update:model-value="onFieldChange(cond)"
+							<div class="h-px flex-1 bg-outline-gray-1"></div>
+						</div>
+
+						<!-- Condition row -->
+						<div class="flex items-center gap-2">
+							<!-- Field selector: columns, or attribute key with badge -->
+							<template v-if="cond.field === '__attr__'">
+								<div class="flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-violet-200 bg-violet-50 px-2 py-1.5">
+									<TagIcon class="h-3.5 w-3.5 shrink-0 text-violet-500" />
+									<span class="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-violet-600">attr</span>
+									<div class="min-w-0 flex-1">
+										<Select
+											size="sm"
+											:options="attrKeyOptions()"
+											v-model="cond.attrKey"
+										/>
+									</div>
+									<button
+										class="shrink-0 rounded p-0.5 text-violet-400 transition-colors hover:bg-violet-100 hover:text-violet-600"
+										@click="cond.field = 'product'"
+										title="Back to fields"
+									>
+										<RotateCcwIcon class="h-3 w-3" />
+									</button>
+								</div>
+							</template>
+							<template v-else>
+								<div class="min-w-0 flex-1">
+									<Select
+										:options="fieldOptions"
+										v-model="cond.field"
+										@update:model-value="onFieldChange(cond)"
+									/>
+								</div>
+							</template>
+
+							<div class="w-16 shrink-0">
+								<Select :options="opOptions" v-model="cond.op" />
+							</div>
+							<div class="min-w-0 flex-[1.4]">
+								<TextInput
+									:placeholder="valuePlaceholder(cond)"
+									v-model="cond.value"
+									:type="isNumeric(cond) ? 'number' : 'text'"
+									@keydown.enter="apply"
 								/>
 							</div>
-						</template>
-
-						<div class="w-16 shrink-0">
-							<Select :options="opOptions" v-model="cond.op" />
+							<button
+								class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-ink-gray-3 transition-colors hover:bg-surface-gray-1 hover:text-ink-gray-6"
+								@click="draft.splice(i, 1)"
+								title="Remove"
+							>
+								<Trash2Icon class="h-4 w-4" />
+							</button>
 						</div>
-						<div class="min-w-0 flex-[1.4]">
-							<TextInput
-								:placeholder="valuePlaceholder(cond)"
-								v-model="cond.value"
-								:type="isNumeric(cond) ? 'number' : 'text'"
-								@keydown.enter="apply"
-							/>
-						</div>
-						<Button variant="ghost" class="shrink-0 !px-1.5" @click="draft.splice(i, 1)">
-							<template #icon><Trash2Icon class="h-4 w-4 text-ink-gray-4" /></template>
-						</Button>
-					</div>
-				</template>
+					</template>
+				</div>
 
-				<div class="mt-3 flex items-center justify-between border-t border-outline-gray-1 pt-2">
+				<div class="mt-3 flex items-center justify-between border-t border-outline-gray-1 pt-3">
 					<div class="flex gap-1.5">
 						<Button variant="ghost" size="sm" label="Add field" @click="addRow('field')">
 							<template #icon><PlusIcon class="h-3.5 w-3.5" /></template>
