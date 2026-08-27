@@ -31,9 +31,23 @@ const emit = defineEmits(['zoom'])
 const chart = ref(null)
 let instance = null
 
+function filledData() {
+	if (!props.data.length) return []
+	const bucketMs = props.bucketSeconds * 1000
+	const byBucket = new Map(props.data.map((d) => [d.bucket, d.counts]))
+	const start = Math.floor(props.start / bucketMs) * bucketMs
+	const end = props.end
+	const out = []
+	for (let t = start; t <= end; t += bucketMs) {
+		out.push({ bucket: t, counts: byBucket.get(t) || {} })
+	}
+	return out
+}
+
 function render() {
 	if (!instance) return
 	instance.resize()
+	const data = filledData()
 	const levels = LEVEL_ORDER.filter((lv) => props.data.some((d) => d.counts[lv]))
 	instance.setOption(
 		{
@@ -83,7 +97,8 @@ function render() {
 				stack: 'logs',
 				itemStyle: { color: LEVEL_COLORS[level] },
 				barMaxWidth: '100%',
-				data: props.data.map((d) => [d.bucket, d.counts[level] || 0]),
+				barMinWidth: 2,
+				data: data.map((d) => [d.bucket, d.counts[level] || 0]),
 			})),
 		},
 		true,
