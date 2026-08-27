@@ -81,5 +81,8 @@ def _as_conditions(value: Any) -> list[dict]:
 		field = str(item.get("field") or "")
 		op = str(item.get("op") or "")
 		if field and op in OPERATORS:
-			out.append({"field": field, "op": op, "value": item.get("value", "")})
+			cond = {"field": field, "op": op, "value": item.get("value", "")}
+			if str(item.get("conjunction") or "and") == "or":
+				cond["conjunction"] = "or"
+			out.append(cond)
 	return out

@@ -95,13 +95,21 @@ def build_filters(
 			parameters[field] = values
 			clauses.append(f"{field} IN {{{field}:Array(LowCardinality(String))}}")
 
+	cond_parts: list[str] = []
 	for idx, cond in enumerate(conditions or []):
 		built = _condition_clause(cond.get("field", ""), cond.get("op", ""), cond.get("value"), idx)
 		if not built:
 			continue
 		clause, value = built
-		clauses.append(clause)
 		parameters[f"c{idx}"] = value
+		conjunction = cond.get("conjunction", "and")
+		if not cond_parts:
+			cond_parts.append(f"({clause})")
+		else:
+			joiner = " OR " if conjunction == "or" else " AND "
+			cond_parts.append(f"{joiner}({clause})")
+	if cond_parts:
+		clauses.append("(" + "".join(cond_parts) + ")")
 
 	return " AND ".join(clauses), parameters
 
