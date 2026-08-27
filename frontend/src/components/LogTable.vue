@@ -4,7 +4,7 @@
 		<div class="sticky top-0 z-10 flex items-center gap-2 border-b border-outline-gray-1 bg-surface-gray-1 px-4 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-wider text-ink-gray-4">
 			<span class="w-4 shrink-0" />
 			<span class="w-40 shrink-0">Timestamp</span>
-			<span class="w-[4.25rem] shrink-0">Level</span>
+			<span class="w-[5.5rem] shrink-0">Level</span>
 			<span class="hidden w-28 shrink-0 lg:inline">Service</span>
 			<span class="min-w-0 flex-1">Message</span>
 		</div>
@@ -41,7 +41,7 @@
 					:class="{ 'rotate-90': open.has(i) }"
 				/>
 				<span class="w-40 shrink-0 tnum text-ink-gray-5">{{ formatTs(row.ts) }}</span>
-				<span class="w-[4.5rem] shrink-0">
+				<span class="w-[5.5rem] shrink-0">
 					<span class="inline-flex items-center gap-1.5 rounded-full bg-surface-gray-2 px-2 py-0.5 text-xs text-ink-gray-5">
 						<span class="h-2 w-2 shrink-0 rounded-full" :style="{ backgroundColor: levelColor(row.level) }" />
 						<span class="capitalize">{{ formatLevel(row.level) }}</span>
