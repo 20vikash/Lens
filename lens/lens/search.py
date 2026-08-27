@@ -7,9 +7,16 @@ from typing import Any
 FIELDS = ("resource_id", "product", "service", "level", "source")
 COLUMNS = (*FIELDS, "message")
 LEVELS = ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL")
+LEVEL_ALIASES = {"WARN": "WARNING", "ERR": "ERROR", "FATAL": "CRITICAL", "TRACE": "DEBUG"}
 OPERATORS = ("eq", "ne", "gt", "lt", "gte", "lte", "contains")
 NUMERIC_OPS = ("gt", "lt", "gte", "lte")
 _ATTR_KEY = re.compile(r"^[A-Za-z0-9_.:-]+$")
+
+
+def _normalize_level(raw: str) -> str:
+	"""Map producer-level names (warn, err, …) to the canonical set the UI expects."""
+	upper = str(raw or "").upper()
+	return LEVEL_ALIASES.get(upper, upper)
 
 
 def _column_for(field: str) -> str | None:
@@ -73,9 +80,13 @@ def build_filters(
 			)
 
 	if levels:
-		parameters["levels"] = [lv for lv in levels if lv in LEVELS]
-		if parameters["levels"]:
-			clauses.append("level IN {levels:Array(LowCardinality(String))}")
+		match = [lv for lv in levels if lv in LEVELS]
+		for alias, canonical in LEVEL_ALIASES.items():
+			if canonical in match and alias not in match:
+				match.append(alias)
+		if match:
+			parameters["levels"] = match
+			clauses.append("upper(level) IN {levels:Array(LowCardinality(String))}")
 
 	for field in FIELDS:
 		values = (filters or {}).get(field) or []
@@ -123,9 +134,12 @@ def _stats_histogram(
 
 	if levels:
 		valid = [lv for lv in levels if lv in LEVELS]
+		for alias, canonical in LEVEL_ALIASES.items():
+			if canonical in valid and alias not in valid:
+				valid.append(alias)
 		if valid:
 			parameters["levels"] = valid
-			clauses.append("level IN {levels:Array(LowCardinality(String))}")
+			clauses.append("upper(level) IN {levels:Array(LowCardinality(String))}")
 
 	for field in ("resource_id", "product", "service"):
 		values = [v for v in (filters or {}).get(field, []) if v]
@@ -146,7 +160,7 @@ def _stats_histogram(
 	histogram: dict[int, dict[str, int]] = {}
 	for d, lvl, count in response.result_rows:
 		key = int(datetime.combine(d, datetime.min.time(), tzinfo=UTC).timestamp() * 1000)
-		histogram.setdefault(key, {})[lvl] = count
+		histogram.setdefault(key, {})[_normalize_level(lvl)] = count
 	return histogram
 
 
@@ -199,6 +213,7 @@ def search(
 		row = dict(zip(columns, raw, strict=True))
 		row["ts"] = int(row["ts"].timestamp() * 1000)
 		row["attributes"] = row.get("attributes") or {}
+		row["level"] = _normalize_level(row.get("level"))
 		rows.append(row)
 
 	span = max((end - start) / 1000, 1)
@@ -220,7 +235,7 @@ def search(
 		)
 		for b_ts, lvl, count in histogram_result.result_rows:
 			key = int(b_ts.timestamp() * 1000)
-			histogram.setdefault(key, {})[lvl] = count
+			histogram.setdefault(key, {})[_normalize_level(lvl)] = count
 
 	facets = get_facets(client, base, parameters)
 	facets["__attributes__"] = get_attribute_facets(client, base, parameters)
@@ -237,13 +252,19 @@ def get_facets(client: Any, base: str, parameters: dict) -> dict:
 	result = {}
 	for field in FIELDS:
 		try:
+			value_expr = f"upper({field})" if field == "level" else field
 			response = client.query(
-				f"SELECT {field} AS value, count() AS count {base}"
+				f"SELECT {value_expr} AS value, count() AS count {base}"
 				f" GROUP BY value ORDER BY count DESC LIMIT 10",
 				parameters=parameters,
 			)
 			result[field] = [
-				{"value": str(value) if value is not None else "", "count": count}
+				{
+					"value": _normalize_level(value)
+					if field == "level"
+					else (str(value) if value is not None else ""),
+					"count": count,
+				}
 				for value, count in response.result_rows
 			]
 		except Exception:
