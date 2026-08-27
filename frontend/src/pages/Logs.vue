@@ -1,7 +1,7 @@
 <template>
 	<div class="flex h-screen flex-col overflow-hidden bg-surface-menu-bar">
 		<!-- Toolbar -->
-		<header class="relative z-20 shrink-0 border-b border-outline-gray-2 bg-surface-white px-4 py-2.5">
+		<header class="shrink-0 border-b border-outline-gray-2 bg-surface-white px-4 py-2.5">
 			<div class="flex items-center gap-3">
 				<div class="flex items-center gap-2.5 pr-1">
 					<div class="flex h-7 w-7 items-center justify-center rounded-md bg-surface-gray-7 shadow-sm">
@@ -122,7 +122,7 @@
 				/>
 
 				<!-- Results header -->
-				<div class="relative z-10 mt-2 flex shrink-0 items-center justify-between border-y border-outline-gray-1 bg-surface-menu-bar px-4 py-1.5">
+				<div class="mt-2 flex shrink-0 items-center justify-between border-y border-outline-gray-1 bg-surface-menu-bar px-4 py-1.5">
 					<div class="flex items-center gap-2 text-xs text-ink-gray-4">
 						<LoadingIndicator v-if="result.loading && !result.data" class="h-3 w-3" />
 						<span v-else class="font-medium tnum text-ink-gray-7">{{ humanCount(result.data?.total || 0) }} <span class="font-normal text-ink-gray-4">results</span></span>
@@ -143,7 +143,7 @@
 					</div>
 				</div>
 
-				<div class="relative min-h-0 flex-1 overflow-y-auto" ref="scroller">
+				<div class="min-h-0 flex-1 overflow-y-auto" ref="scroller">
 					<LogTable :rows="rows" :loading="result.loading" @context="setContextRange" />
 					<div v-if="rows.length < result.data?.total" class="flex justify-center border-t border-outline-gray-1 py-3">
 						<Button label="Load more" @click="loadMore" :loading="result.loading" />
