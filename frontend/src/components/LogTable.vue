@@ -42,7 +42,7 @@
 				/>
 				<span class="w-40 shrink-0 tnum text-ink-gray-5">{{ formatTs(row.ts) }}</span>
 				<span class="w-[4.5rem] shrink-0">
-					<span class="inline-flex items-center gap-1.5 text-xs text-ink-gray-5">
+					<span class="inline-flex items-center gap-1.5 rounded-full bg-surface-gray-2 px-2 py-0.5 text-xs text-ink-gray-5">
 						<span class="h-2 w-2 shrink-0 rounded-full" :style="{ backgroundColor: levelColor(row.level) }" />
 						<span class="capitalize">{{ formatLevel(row.level) }}</span>
 					</span>
