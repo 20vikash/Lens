@@ -58,6 +58,7 @@
 											v-model="customStart"
 											placeholder="Select start date & time"
 											:allow-custom-time="true"
+											:allow-custom="false"
 											class="w-full"
 										/>
 									</div>
@@ -67,6 +68,7 @@
 											v-model="customEnd"
 											placeholder="Select end date & time"
 											:allow-custom-time="true"
+											:allow-custom="false"
 											class="w-full"
 										/>
 									</div>
